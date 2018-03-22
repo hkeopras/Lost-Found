@@ -1,0 +1,17 @@
+<resources>
+    //App name
+    <string name="app_name">Lost &amp; Found</string>
+
+    //Theses strings were here by default
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    //Menu string
+    <string name="menu_status">Status</string>
+    <string name="menu_history">History</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_parameters">Settings</string>
+
+</resources>
