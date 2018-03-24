@@ -27,8 +27,22 @@ public class Menu extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Change ActionBar name
+                getSupportActionBar().setTitle("Notice");
+
+                //Hide FloatingActionButton
+                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                fab.hide();
+
+                //Switch Interface
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, new Notice())
+                        .commit();
+
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                navigationView.setCheckedItem(R.id.nav_notice);
+
             }
         });
 
@@ -72,9 +86,24 @@ public class Menu extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        FragmentManager fragmentManager = getFragmentManager();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            //Change ActionBar name
+            getSupportActionBar().setTitle("Settings");
+
+            //Hide FloatingActionButton
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.hide();
+
+            //Switch Interface
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new Settings())
+                    .commit();
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(R.id.nav_settings);
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -90,20 +119,35 @@ public class Menu extends AppCompatActivity
         if (id == R.id.nav_status) {
             //Change ActionBar name
             getSupportActionBar().setTitle("Status");
+
+            //Show FloatingActionButton
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.show();
+
             //Switch Interface
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new Status())
                     .commit();
-        } else if (id == R.id.nav_history) {
+        } else if (id == R.id.nav_notice) {
             //Change ActionBar name
-            getSupportActionBar().setTitle("History");
+            getSupportActionBar().setTitle("New notice");
+
+            //Hide FloatingActionButton
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.hide();
+
             //Switch Interface
             fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new History())
+                    .replace(R.id.content_frame, new Notice())
                     .commit();
         } else if (id == R.id.nav_map) {
             //Change ActionBar name
             getSupportActionBar().setTitle("Map");
+
+            //Hide FloatingActionButton
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.hide();
+
             //Switch Interface
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new Map())
@@ -111,6 +155,11 @@ public class Menu extends AppCompatActivity
         } else if (id == R.id.nav_settings) {
             //Change ActionBar name
             getSupportActionBar().setTitle("Settings");
+
+            //Hide FloatingActionButton
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.hide();
+
             //Switch Interface
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new Settings())

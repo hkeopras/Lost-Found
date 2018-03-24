@@ -10,8 +10,39 @@
 
     //Menu string
     <string name="menu_status">Status</string>
-    <string name="menu_history">History</string>
+    <string name="menu_notice">New notice</string>
     <string name="menu_map">Map</string>
     <string name="menu_parameters">Settings</string>
+
+    //Login
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="create_account">Create account</string>
+    <string name="member">Already a member? Login</string>
+
+    //Notice
+    <string name="lost_or_found">Status</string>
+    <string name="lost">Lost</string>
+    <string name="found">Found</string>
+    <string name="category">Category</string>
+    <string-array name="categoryArray">
+        <item>Please select a category</item>
+        <item>Bags</item>
+        <item>Books</item>
+        <item>Cards</item>
+        <item>Cell phone &amp; Accessories</item>
+        <item>Clothing, Shoes &amp; Accessories</item>
+        <item>Coins &amp; Paper Money</item>
+        <item>Computer/Tablet &amp; Accessories</item>
+        <item>Jewelry &amp; Watches</item>
+        <item>Wallets</item>
+        <item>Other</item>
+    </string-array>
+    <string name="description">Description</string>
+    <string name="upload_picture">Upload a picture (optional)</string>
+    <string name="create_notice">Create notice</string>
 
 </resources>
