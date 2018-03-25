@@ -89,6 +89,7 @@ public class Menu extends AppCompatActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             //Change ActionBar name
             getSupportActionBar().setTitle("Settings");
 

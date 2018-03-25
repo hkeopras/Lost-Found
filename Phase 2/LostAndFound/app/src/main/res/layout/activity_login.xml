@@ -55,6 +55,14 @@
                 android:textColor="@android:color/white" />
         </android.support.design.widget.TextInputLayout>
 
+        <CheckBox
+            android:id="@+id/checkboxRememberMe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:buttonTint="@android:color/white"
+            android:text="@string/remember_me"
+            android:textColor="@android:color/white" />
+
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/btnLogin"
             android:layout_width="fill_parent"
