@@ -44,5 +44,10 @@
     <string name="description">Description</string>
     <string name="upload_picture">Upload a picture (optional)</string>
     <string name="create_notice">Create notice</string>
+    <string name="title_activity_map">Map</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

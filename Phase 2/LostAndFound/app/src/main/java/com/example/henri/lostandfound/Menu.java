@@ -1,6 +1,6 @@
 package com.example.henri.lostandfound;
 
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -35,7 +35,7 @@ public class Menu extends AppCompatActivity
                 fab.hide();
 
                 //Switch Interface
-                FragmentManager fragmentManager = getFragmentManager();
+                FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, new Notice())
                         .commit();
@@ -86,7 +86,7 @@ public class Menu extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             //Change ActionBar name
@@ -114,7 +114,7 @@ public class Menu extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (id == R.id.nav_status) {
             //Change ActionBar name
