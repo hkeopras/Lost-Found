@@ -1,10 +1,8 @@
 package com.example.henri.lostandfound;
 
 import android.support.v4.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +15,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import io.matchmore.sdk.MatchMore;
-import io.matchmore.sdk.MatchMoreConfig;
 import io.matchmore.sdk.MatchMoreSdk;
-import io.matchmore.sdk.api.models.MobileDevice;
-import kotlin.Unit;
+import io.matchmore.sdk.api.models.Device;
+import io.matchmore.sdk.api.models.Publication;
 
 
 /**
@@ -109,7 +106,11 @@ public class Notice extends Fragment
         MatchMoreSdk matchMore = MatchMore.getInstance();
 
         //Creating main device
-        //matchMore.startUsingMainDevice();
+        matchMore.startUsingMainDevice(new Device() {
+
+        });
+        Publication publication = new Publication("Test topic", 1.0, 0.0);
+        matchMore.createPublication(publication);
 
         return null;
 
