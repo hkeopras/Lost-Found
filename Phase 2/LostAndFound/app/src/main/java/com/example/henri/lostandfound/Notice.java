@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import io.matchmore.sdk.MatchMore;
+import io.matchmore.sdk.MatchMoreConfig;
+import io.matchmore.sdk.MatchMoreSdk;
+import io.matchmore.sdk.api.models.MobileDevice;
+import kotlin.Unit;
 
 
 /**
@@ -55,14 +63,29 @@ public class Notice extends Fragment
         myView.findViewById(R.id.radioLost).setOnClickListener(this);
         myView.findViewById(R.id.radioFound).setOnClickListener(this);
 
+        btnCreateNotice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (radioLost.isChecked() == radioFound.isChecked()) {
+                    Toast.makeText(getContext(), "Please indicate if the object is lost or found.", Toast.LENGTH_SHORT).show();
+                } else if (spinner.getSelectedItem().toString().equals("Please select a category")) {
+                    Toast.makeText(getContext(), "Please indicate a category.", Toast.LENGTH_SHORT).show();
+                } else if (radioLost.isChecked()) {
+                    //TODO: Create Publication
+                } else if (radioFound.isChecked()) {
+                    //TODO: Create Subscription
+                }
+            }
+        });
+
         return myView;
     }
     @Override
     public void onClick(View view) {
-        // Is the button now checked?
+        //Is the button now checked?
         boolean checked = ((RadioButton) view).isChecked();
 
-        // Check which radio button was clicked
+        //Check which radio button was clicked
         switch(view.getId()) {
             case R.id.radioLost:
                 if (checked)
@@ -71,6 +94,25 @@ public class Notice extends Fragment
                 if (checked)
                     break;
         }
+    }
+
+    public Void matchMore() {
+
+        //Configuration of API
+        MatchMore.config(getContext(),
+                "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJhbHBzIiwic3ViIjoiMDlmZTEyZjUtODRmYS00YTI1LTg3NDAtODNjNTlmZjhiMTM3IiwiYXVkIjpbIlB" +
+                        "1YmxpYyJdLCJuYmYiOjE1MjA1MDQ1ODYsImlhdCI6MTUyMDUwNDU4NiwianRpIjoiMSJ9.KhZOaDqod6QD0dVT_VSnMjqnpXJCfhyE6x9z8X0afAvE6wcS5pL3FhxCo" +
+                        "N2yTWUorsmbXEHeX8gRSA_ivIgokQ",
+                Boolean.parseBoolean("true"));
+
+        //Getting instance. It's static variable. It's possible to have only one instance of matchmore.
+        MatchMoreSdk matchMore = MatchMore.getInstance();
+
+        //Creating main device
+        //matchMore.startUsingMainDevice();
+
+        return null;
+
     }
 
 }
