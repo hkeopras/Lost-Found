@@ -1,8 +1,12 @@
 package com.example.henri.lostandfound;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +18,15 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.util.Arrays;
+
 import io.matchmore.sdk.MatchMore;
 import io.matchmore.sdk.MatchMoreSdk;
-import io.matchmore.sdk.api.models.Device;
+import io.matchmore.sdk.api.models.Match;
+import io.matchmore.sdk.api.models.MobileDevice;
 import io.matchmore.sdk.api.models.Publication;
+import io.matchmore.sdk.api.models.Subscription;
+import kotlin.Unit;
 
 
 /**
@@ -32,6 +41,8 @@ public class Notice extends Fragment
     RadioButton radioLost, radioFound;
     EditText etDescription;
     Button btnCreateNotice;
+
+    final String API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJhbHBzIiwic3ViIjoiMDlmZTEyZjUtODRmYS00YTI1LTg3NDAtODNjNTlmZjhiMTM3IiwiYXVkIjpbIlB1YmxpYyJdLCJuYmYiOjE1MjA1MDQ1ODYsImlhdCI6MTUyMDUwNDU4NiwianRpIjoiMSJ9.KhZOaDqod6QD0dVT_VSnMjqnpXJCfhyE6x9z8X0afAvE6wcS5pL3FhxCoN2yTWUorsmbXEHeX8gRSA_ivIgokQ";
 
     @Nullable
     @Override
@@ -69,14 +80,20 @@ public class Notice extends Fragment
                     Toast.makeText(getContext(), "Please indicate a category.", Toast.LENGTH_SHORT).show();
                 } else if (radioLost.isChecked()) {
                     //TODO: Create Publication
+                    matchMorePub();
+                    startActivity(new Intent(getContext(), Menu.class));
                 } else if (radioFound.isChecked()) {
                     //TODO: Create Subscription
+                    matchMoreSub();
+                    startActivity(new Intent(getContext(), Menu.class));
+                    match();
                 }
             }
         });
 
         return myView;
     }
+
     @Override
     public void onClick(View view) {
         //Is the button now checked?
@@ -93,24 +110,101 @@ public class Notice extends Fragment
         }
     }
 
-    public Void matchMore() {
+    public Void matchMorePub() {
+
+        // Request Location permission
+        ActivityCompat.requestPermissions(getActivity(), new String[]
+                {android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         //Configuration of API
-        MatchMore.config(getContext(),
-                "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJhbHBzIiwic3ViIjoiMDlmZTEyZjUtODRmYS00YTI1LTg3NDAtODNjNTlmZjhiMTM3IiwiYXVkIjpbIlB" +
-                        "1YmxpYyJdLCJuYmYiOjE1MjA1MDQ1ODYsImlhdCI6MTUyMDUwNDU4NiwianRpIjoiMSJ9.KhZOaDqod6QD0dVT_VSnMjqnpXJCfhyE6x9z8X0afAvE6wcS5pL3FhxCo" +
-                        "N2yTWUorsmbXEHeX8gRSA_ivIgokQ",
-                Boolean.parseBoolean("true"));
+        if (!MatchMore.isConfigured()) {
+            MatchMore.config(getContext(),
+                    API_KEY,
+                    true);
+        }
 
-        //Getting instance. It's static variable. It's possible to have only one instance of matchmore.
+        //Getting instance. It's a static variable. It's possible to have only one instance of matchmore.
         MatchMoreSdk matchMore = MatchMore.getInstance();
 
         //Creating main device
-        matchMore.startUsingMainDevice(new Device() {
+        matchMore.startUsingMainDevice((MobileDevice device) -> {
 
+            Publication publication = new Publication(spinner.getSelectedItem().toString(), 0d, 300d);
+            matchMore.createPublication(publication, createdPublication -> {
+                Log.d("Publication created", createdPublication.getId());
+                Toast.makeText(getContext(), "Publication created", Toast.LENGTH_SHORT).show();
+                return Unit.INSTANCE; // This is important (b/c kotlin vs java lambdas differ in implementation)
+            }, e -> {
+                Log.d("Publication error1", e.getMessage());
+                return Unit.INSTANCE;
+            });
+            return Unit.INSTANCE;
+        }, e -> {
+            Log.d("Publication error2", e.getMessage());
+            return Unit.INSTANCE;
         });
-        Publication publication = new Publication("Test topic", 1.0, 0.0);
-        matchMore.createPublication(publication);
+
+        return null;
+
+    }
+
+    public Void matchMoreSub() {
+
+        // Request Location permission
+        ActivityCompat.requestPermissions(getActivity(), new String[]
+                {android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        //Configuration of API
+        if (!MatchMore.isConfigured()) {
+            MatchMore.config(getContext(),
+                    API_KEY,
+                    true);
+        }
+
+        //Getting instance. It's a static variable. It's possible to have only one instance of matchmore.
+        MatchMoreSdk matchMore = MatchMore.getInstance();
+
+        //Creating main device
+        matchMore.startUsingMainDevice((MobileDevice device) -> {
+
+            Subscription subscription = new Subscription(spinner.getSelectedItem().toString(), 1000d, 300d, "");
+            matchMore.createSubscription(subscription, createdSubscription -> {
+                Log.d("Subscription created", createdSubscription.getId());
+                Toast.makeText(getContext(), "Subscription created", Toast.LENGTH_SHORT).show();
+                return Unit.INSTANCE;
+            }, e -> {
+                Log.d("Subscription error1", e.getMessage());
+                return Unit.INSTANCE;
+            });
+            return Unit.INSTANCE;
+        }, e -> {
+            Log.d("Subscription error2", e.getMessage());
+            return Unit.INSTANCE;
+        });
+
+        return null;
+
+    }
+
+    public Void match() {
+
+        //Getting instance. It's a static variable. It's possible to have only one instance of matchmore.
+        MatchMoreSdk matchMore = MatchMore.getInstance();
+
+        // Start getting matches
+        matchMore.getMatchMonitor().addOnMatchListener((matches, device) -> {
+            Log.d("Matches found", device.getId());
+            Log.d("Array", Arrays.deepToString(matchMore.getMatches().toArray()));
+            return Unit.INSTANCE;
+        });
+        matchMore.getMatchMonitor().startPollingMatches();
+
+        // Start updating location
+        if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
+            matchMore.startUpdatingLocation();
+        }
 
         return null;
 
