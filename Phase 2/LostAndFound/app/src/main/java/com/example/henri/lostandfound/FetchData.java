@@ -2,7 +2,6 @@ package com.example.henri.lostandfound;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -20,25 +19,37 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class FetchData extends AsyncTask<Void, Void, String> {
 
     final String API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJhbHBzIiwic3ViIjoiMDlmZTEyZjUtODRmYS00YTI1LTg3NDAtODNjNTlmZjhiMTM3IiwiYXVkIjpbIlB1YmxpYyJdLCJuYmYiOjE1MjA1MDQ1ODYsImlhdCI6MTUyMDUwNDU4NiwianRpIjoiMSJ9.KhZOaDqod6QD0dVT_VSnMjqnpXJCfhyE6x9z8X0afAvE6wcS5pL3FhxCoN2yTWUorsmbXEHeX8gRSA_ivIgokQ";
     String dataJSON = "";
     private Context context;
+    String deviceId;
 
     private AsyncInterface asyncInterface;
 
-    public FetchData(AsyncInterface asyncInterface) {
+    public FetchData(Context context, AsyncInterface asyncInterface) {
         this.context = context;
         this.asyncInterface = asyncInterface;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("deviceId", MODE_PRIVATE);
+        deviceId = sharedPreferences.getString("deviceId", deviceId);
+
     }
 
     @Override
     protected String doInBackground(Void... voids) {
 
         try {
-            URL url = new URL("https://api.matchmore.io/v5/devices/" + "f9a4b459-74bf-477e-85db-06518cb015a6" + "/matches");
+            URL url = new URL("https://api.matchmore.io/v5/devices/" + deviceId + "/matches");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestProperty("api-key", API_KEY);
             InputStream inputStream = httpURLConnection.getInputStream();

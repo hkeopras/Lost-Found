@@ -1,15 +1,14 @@
 package com.example.henri.lostandfound;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -213,6 +212,12 @@ public class Notice extends Fragment
         matchMore.getMatchMonitor().addOnMatchListener((matches, device) -> {
             Log.d("Matches found", device.getId());
             Log.d("Matches array", Arrays.deepToString(matchMore.getMatches().toArray()));
+
+            SharedPreferences settings = getActivity().getSharedPreferences("deviceId", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("deviceId", device.getId());
+            editor.apply();
+
 
             return Unit.INSTANCE;
         });

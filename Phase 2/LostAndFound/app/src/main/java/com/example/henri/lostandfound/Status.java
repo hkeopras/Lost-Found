@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 /**
  * Created by Henri on 22.03.2018.
@@ -35,6 +37,7 @@ public class Status extends Fragment implements AsyncInterface {
     ListView lvMatches;
     private MatchesListAdapter adapter;
     private List<Matches> matchesList;
+    String deviceId;
 
     @Nullable
     @Override
@@ -48,8 +51,12 @@ public class Status extends Fragment implements AsyncInterface {
         ((Menu) getActivity()).showFAB();
 
         //Get JSON data
-        FetchData process = new FetchData(Status.this);
-        process.execute();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("deviceId", MODE_PRIVATE);
+        deviceId = sharedPreferences.getString("deviceId", deviceId);
+        if (deviceId != null) {
+            FetchData process = new FetchData(getContext(),Status.this);
+            process.execute();
+        }
 
         return myView;
     }
