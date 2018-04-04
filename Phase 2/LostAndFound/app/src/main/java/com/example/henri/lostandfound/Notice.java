@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -44,6 +45,7 @@ public class Notice extends Fragment
     View myView;
     Spinner spinner;
     RadioButton radioLost, radioFound;
+    TextView tvDescription;
     EditText etDescription;
     Button btnCreateNotice;
 
@@ -69,6 +71,7 @@ public class Notice extends Fragment
         spinner = (Spinner) myView.findViewById(R.id.spinner);
         radioLost = (RadioButton) myView.findViewById(R.id.radioLost);
         radioFound = (RadioButton) myView.findViewById(R.id.radioFound);
+        tvDescription = (TextView) myView.findViewById(R.id.tvDescription);
         etDescription = (EditText) myView.findViewById(R.id.etDescription);
         btnCreateNotice = (Button) myView.findViewById(R.id.btnCreateNotice);
 
@@ -84,6 +87,22 @@ public class Notice extends Fragment
         //Need this to check radio buttons
         myView.findViewById(R.id.radioLost).setOnClickListener(this);
         myView.findViewById(R.id.radioFound).setOnClickListener(this);
+
+        radioLost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvDescription.setVisibility(View.VISIBLE);
+                etDescription.setVisibility(View.VISIBLE);
+            }
+        });
+
+        radioFound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tvDescription.setVisibility(View.GONE);
+                etDescription.setVisibility(View.GONE);
+            }
+        });
 
         btnCreateNotice.setOnClickListener(new View.OnClickListener() {
             @Override
