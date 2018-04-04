@@ -27,11 +27,27 @@ public class Map extends Fragment
     private static final int MY_REQUEST_INT = 177;
     View myView;
     GoogleMap map;
+    Double lat = 46.522625;
+    Double lng = 6.584393;
+    String description = "UNIL-Internef";
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_map, container, false);
+
+        //Set title bar
+        ((Menu) getActivity()).setActionBarTitle("Map");
+
+        //Hide FloatingActionButton
+        ((Menu) getActivity()).hideFAB();
+
+        if (getArguments() != null) {
+            lat = Double.parseDouble(getArguments().getString("latitude"));
+            lng = Double.parseDouble(getArguments().getString("longitude"));
+            description = getArguments().getString("description");
+        }
 
         return myView;
     }
@@ -50,9 +66,9 @@ public class Map extends Fragment
         map = googleMap;
 
         //Default location: UNIL - Internef
-        LatLng pp = new LatLng(46.522625, 6.584393);
+        LatLng pp = new LatLng(lat, lng);
         MarkerOptions option = new MarkerOptions();
-        option.position(pp).title("UNIL - Internef");
+        option.position(pp).title(description);
         map.addMarker(option);
 
         //Zoom in
@@ -79,4 +95,5 @@ public class Map extends Fragment
             map.setMyLocationEnabled(true);
         }
     }
+
 }

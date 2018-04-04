@@ -1,5 +1,6 @@
 package com.example.henri.lostandfound;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -27,18 +28,8 @@ public class Menu extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Change ActionBar name
-                getSupportActionBar().setTitle("Notice");
 
-                //Hide FloatingActionButton
-                FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                fab.hide();
-
-                //Switch Interface
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, new Notice())
-                        .commit();
+                switchFragment(new Notice());
 
                 NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
                 navigationView.setCheckedItem(R.id.nav_notice);
@@ -60,6 +51,7 @@ public class Menu extends AppCompatActivity
 
         //Set "Status" as default view onCreate
         onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_status));
+
     }
 
     @Override
@@ -86,21 +78,10 @@ public class Menu extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
 
-            //Change ActionBar name
-            getSupportActionBar().setTitle("Settings");
-
-            //Hide FloatingActionButton
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.hide();
-
-            //Switch Interface
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new Settings())
-                    .commit();
+            switchFragment(new Settings());
 
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             navigationView.setCheckedItem(R.id.nav_settings);
@@ -115,56 +96,23 @@ public class Menu extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentManager fragmentManager = getSupportFragmentManager();
 
         if (id == R.id.nav_status) {
-            //Change ActionBar name
-            getSupportActionBar().setTitle("Status");
 
-            //Show FloatingActionButton
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.show();
+            switchFragment(new Status());
 
-            //Switch Interface
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new Status())
-                    .commit();
         } else if (id == R.id.nav_notice) {
-            //Change ActionBar name
-            getSupportActionBar().setTitle("New notice");
 
-            //Hide FloatingActionButton
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.hide();
+            switchFragment(new Notice());
 
-            //Switch Interface
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new Notice())
-                    .commit();
         } else if (id == R.id.nav_map) {
-            //Change ActionBar name
-            getSupportActionBar().setTitle("Map");
 
-            //Hide FloatingActionButton
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.hide();
+            switchFragment(new Map());
 
-            //Switch Interface
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new Map())
-                    .commit();
         } else if (id == R.id.nav_settings) {
-            //Change ActionBar name
-            getSupportActionBar().setTitle("Settings");
 
-            //Hide FloatingActionButton
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fab.hide();
+            switchFragment(new Settings());
 
-            //Switch Interface
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new Settings())
-                    .commit();
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -175,4 +123,35 @@ public class Menu extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    //Set SupportActionBar title
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    //Hide FloatingActionButton
+    public void hideFAB() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.hide();
+    }
+
+    //Show FloatingActionButton
+    public void showFAB() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.show();
+    }
+
+    //Switch interface
+    public void switchFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();;
+        fragmentManager.beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
+    }
+
+    public void highlight(int ressource){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setCheckedItem(ressource);
+    }
+
 }

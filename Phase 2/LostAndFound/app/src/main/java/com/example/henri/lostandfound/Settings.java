@@ -21,6 +21,12 @@ public class Settings extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_settings, container, false);
 
+        // Set title bar
+        ((Menu) getActivity()).setActionBarTitle("Settings");
+
+        //Hide FloatingActionButton
+        ((Menu) getActivity()).hideFAB();
+
         //Hide keyboard when activity starts
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 

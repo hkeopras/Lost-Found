@@ -1,11 +1,15 @@
 package com.example.henri.lostandfound;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,14 +23,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import io.matchmore.sdk.MatchMore;
 import io.matchmore.sdk.MatchMoreSdk;
-import io.matchmore.sdk.api.models.Match;
 import io.matchmore.sdk.api.models.MobileDevice;
 import io.matchmore.sdk.api.models.Publication;
 import io.matchmore.sdk.api.models.Subscription;
 import kotlin.Unit;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -48,6 +54,15 @@ public class Notice extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_notice, container, false);
+
+        //Set title bar
+        ((Menu) getActivity()).setActionBarTitle("New notice");
+
+        //Hide FAB
+        ((Menu) getActivity()).hideFAB();
+
+        //Hide keyboard when activity starts
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //Hide keyboard when activity starts
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -78,12 +93,12 @@ public class Notice extends Fragment
                     Toast.makeText(getContext(), "Please indicate if the object is lost or found.", Toast.LENGTH_SHORT).show();
                 } else if (spinner.getSelectedItem().toString().equals("Please select a category")) {
                     Toast.makeText(getContext(), "Please indicate a category.", Toast.LENGTH_SHORT).show();
+                } else if (radioLost.isChecked() && TextUtils.isEmpty(etDescription.getText().toString())) {
+                    Toast.makeText(getContext(), "Please provide a short description.", Toast.LENGTH_SHORT).show();
                 } else if (radioLost.isChecked()) {
-                    //TODO: Create Publication
                     matchMorePub();
                     startActivity(new Intent(getContext(), Menu.class));
                 } else if (radioFound.isChecked()) {
-                    //TODO: Create Subscription
                     matchMoreSub();
                     startActivity(new Intent(getContext(), Menu.class));
                     match();
@@ -129,18 +144,21 @@ public class Notice extends Fragment
         //Creating main device
         matchMore.startUsingMainDevice((MobileDevice device) -> {
 
-            Publication publication = new Publication(spinner.getSelectedItem().toString(), 0d, 300d);
+            Publication publication = new Publication(spinner.getSelectedItem().toString(), 0d, 3600d);
+            HashMap hashMap = new HashMap<String, String>();
+            hashMap.put("Description", etDescription.getText().toString());
+            publication.setProperties(hashMap);
             matchMore.createPublication(publication, createdPublication -> {
                 Log.d("Publication created", createdPublication.getId());
                 Toast.makeText(getContext(), "Publication created", Toast.LENGTH_SHORT).show();
                 return Unit.INSTANCE; // This is important (b/c kotlin vs java lambdas differ in implementation)
             }, e -> {
-                Log.d("Publication error1", e.getMessage());
+                e.printStackTrace();
                 return Unit.INSTANCE;
             });
             return Unit.INSTANCE;
         }, e -> {
-            Log.d("Publication error2", e.getMessage());
+            e.printStackTrace();
             return Unit.INSTANCE;
         });
 
@@ -167,18 +185,18 @@ public class Notice extends Fragment
         //Creating main device
         matchMore.startUsingMainDevice((MobileDevice device) -> {
 
-            Subscription subscription = new Subscription(spinner.getSelectedItem().toString(), 1000d, 300d, "");
+            Subscription subscription = new Subscription(spinner.getSelectedItem().toString(), 1000d, 3600d, "");
             matchMore.createSubscription(subscription, createdSubscription -> {
                 Log.d("Subscription created", createdSubscription.getId());
                 Toast.makeText(getContext(), "Subscription created", Toast.LENGTH_SHORT).show();
                 return Unit.INSTANCE;
             }, e -> {
-                Log.d("Subscription error1", e.getMessage());
+                e.printStackTrace();
                 return Unit.INSTANCE;
             });
             return Unit.INSTANCE;
         }, e -> {
-            Log.d("Subscription error2", e.getMessage());
+            e.printStackTrace();
             return Unit.INSTANCE;
         });
 
@@ -194,9 +212,11 @@ public class Notice extends Fragment
         // Start getting matches
         matchMore.getMatchMonitor().addOnMatchListener((matches, device) -> {
             Log.d("Matches found", device.getId());
-            Log.d("Array", Arrays.deepToString(matchMore.getMatches().toArray()));
+            Log.d("Matches array", Arrays.deepToString(matchMore.getMatches().toArray()));
+
             return Unit.INSTANCE;
         });
+
         matchMore.getMatchMonitor().startPollingMatches();
 
         // Start updating location
