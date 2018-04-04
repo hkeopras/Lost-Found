@@ -115,11 +115,13 @@ public class Notice extends Fragment
                     Toast.makeText(getContext(), "Please provide a short description.", Toast.LENGTH_SHORT).show();
                 } else if (radioLost.isChecked()) {
                     matchMorePub();
+                    updateLocation();
                     startActivity(new Intent(getContext(), Menu.class));
                 } else if (radioFound.isChecked()) {
                     matchMoreSub();
                     startActivity(new Intent(getContext(), Menu.class));
                     match();
+                    updateLocation();
                 }
             }
         });
@@ -242,6 +244,14 @@ public class Notice extends Fragment
         });
 
         matchMore.getMatchMonitor().startPollingMatches();
+
+        return null;
+    }
+
+    public Void updateLocation() {
+
+        //Getting instance. It's a static variable. It's possible to have only one instance of matchmore.
+        MatchMoreSdk matchMore = MatchMore.getInstance();
 
         // Start updating location
         if (ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
