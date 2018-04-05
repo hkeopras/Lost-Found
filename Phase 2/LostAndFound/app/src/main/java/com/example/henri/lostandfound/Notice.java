@@ -127,8 +127,8 @@ public class Notice extends Fragment
                     startActivity(new Intent(getContext(), Menu.class));
                 } else if (radioFound.isChecked()) {
                     matchMoreSub();
-                    match();
                     updateLocation();
+                    match();
                     startActivity(new Intent(getContext(), Menu.class));
                 }
             }
