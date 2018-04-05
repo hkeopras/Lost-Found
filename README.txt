@@ -6,4 +6,4 @@ The idea behind our app is to allow students to report a lost/found object so th
 
 
 
-Coded by Henri Keopraseuth, with the help of StackOverflow and others.
+Entirely coded by Henri Keopraseuth, with the help of StackOverflow and others.
