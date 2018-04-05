@@ -31,7 +31,6 @@ public class Map extends Fragment
     Double lng = 6.584393;
     String description = "UNIL-Internef";
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -66,14 +65,14 @@ public class Map extends Fragment
         map = googleMap;
 
         //Default location: UNIL - Internef
-        LatLng pp = new LatLng(lat, lng);
+        LatLng latlng = new LatLng(lat, lng);
         MarkerOptions option = new MarkerOptions();
-        option.position(pp).title(description);
+        option.position(latlng).title(description);
         map.addMarker(option);
 
-        //Zoom in
+        //Zoom in to location pp
         float zoomLevel = 16.0f; //This goes up to 21
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(pp, zoomLevel));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, zoomLevel));
 
         //Enable current location
         //Check permission of localization

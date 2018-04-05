@@ -14,8 +14,6 @@ public class Matches {
     }
 
     //Setter, getter
-
-
     public int getId() {
         return id;
     }

@@ -60,11 +60,9 @@ public class Login extends AppCompatActivity
                 startActivity(intent);
             }
         });
-
     }
 
     public void onClick(View view) {
-
         //Check correct credentials
         if(etEmail.getText().toString().equals("admin") && etPassword.getText().toString().equals("admin")) {
             Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
@@ -86,7 +84,6 @@ public class Login extends AppCompatActivity
                     loginPrefsEditor.clear();
                     loginPrefsEditor.commit();
                 }
-
                 nextActivity();
             }
         } else {
@@ -94,6 +91,7 @@ public class Login extends AppCompatActivity
         }
     }
 
+    //Start Menu
     public void nextActivity() {
         startActivity(new Intent(Login.this, Menu.class));
         Login.this.finish();

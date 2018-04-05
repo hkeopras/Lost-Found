@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,8 +33,6 @@ import io.matchmore.sdk.api.models.Publication;
 import io.matchmore.sdk.api.models.Subscription;
 import kotlin.Unit;
 
-import static android.content.Context.MODE_PRIVATE;
-
 
 /**
  * Created by Henri on 22.03.2018.
@@ -45,9 +44,10 @@ public class Notice extends Fragment
     View myView;
     Spinner spinner;
     RadioButton radioLost, radioFound;
-    TextView tvDescription;
+    TextView tvDescription, tvUploadPicture;
     EditText etDescription;
     Button btnCreateNotice;
+    ImageButton ibUploadPicture;
 
     final String API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJhbHBzIiwic3ViIjoiMDlmZTEyZjUtODRmYS00YTI1LTg3NDAtODNjNTlmZjhiMTM3IiwiYXVkIjpbIlB1YmxpYyJdLCJuYmYiOjE1MjA1MDQ1ODYsImlhdCI6MTUyMDUwNDU4NiwianRpIjoiMSJ9.KhZOaDqod6QD0dVT_VSnMjqnpXJCfhyE6x9z8X0afAvE6wcS5pL3FhxCoN2yTWUorsmbXEHeX8gRSA_ivIgokQ";
 
@@ -72,8 +72,10 @@ public class Notice extends Fragment
         radioLost = (RadioButton) myView.findViewById(R.id.radioLost);
         radioFound = (RadioButton) myView.findViewById(R.id.radioFound);
         tvDescription = (TextView) myView.findViewById(R.id.tvDescription);
+        tvUploadPicture = (TextView) myView.findViewById(R.id.tvUploadPicture);
         etDescription = (EditText) myView.findViewById(R.id.etDescription);
         btnCreateNotice = (Button) myView.findViewById(R.id.btnCreateNotice);
+        ibUploadPicture = (ImageButton) myView.findViewById(R.id.ibUploadPicture);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.categoryArray, android.R.layout.simple_spinner_item);
@@ -88,19 +90,25 @@ public class Notice extends Fragment
         myView.findViewById(R.id.radioLost).setOnClickListener(this);
         myView.findViewById(R.id.radioFound).setOnClickListener(this);
 
+        //Show the following items on radioLost
         radioLost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tvDescription.setVisibility(View.VISIBLE);
                 etDescription.setVisibility(View.VISIBLE);
+                tvUploadPicture.setVisibility(View.VISIBLE);
+                ibUploadPicture.setVisibility(View.VISIBLE);
             }
         });
 
+        //Hide the following items on radioFound
         radioFound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tvDescription.setVisibility(View.GONE);
                 etDescription.setVisibility(View.GONE);
+                tvUploadPicture.setVisibility(View.GONE);
+                ibUploadPicture.setVisibility(View.GONE);
             }
         });
 
@@ -119,9 +127,9 @@ public class Notice extends Fragment
                     startActivity(new Intent(getContext(), Menu.class));
                 } else if (radioFound.isChecked()) {
                     matchMoreSub();
-                    startActivity(new Intent(getContext(), Menu.class));
                     match();
                     updateLocation();
+                    startActivity(new Intent(getContext(), Menu.class));
                 }
             }
         });
@@ -129,6 +137,7 @@ public class Notice extends Fragment
         return myView;
     }
 
+    //OnClick: Set the radio buttons to the corresponding one
     @Override
     public void onClick(View view) {
         //Is the button now checked?
@@ -145,6 +154,7 @@ public class Notice extends Fragment
         }
     }
 
+    //Create a publication
     public Void matchMorePub() {
 
         // Request Location permission
@@ -186,6 +196,7 @@ public class Notice extends Fragment
 
     }
 
+    //Create a subscription
     public Void matchMoreSub() {
 
         // Request Location permission
@@ -224,6 +235,7 @@ public class Notice extends Fragment
 
     }
 
+    //Start to find matches
     public Void match() {
 
         //Getting instance. It's a static variable. It's possible to have only one instance of matchmore.
@@ -248,6 +260,7 @@ public class Notice extends Fragment
         return null;
     }
 
+    //Update location
     public Void updateLocation() {
 
         //Getting instance. It's a static variable. It's possible to have only one instance of matchmore.
@@ -263,5 +276,4 @@ public class Notice extends Fragment
         return null;
 
     }
-
 }

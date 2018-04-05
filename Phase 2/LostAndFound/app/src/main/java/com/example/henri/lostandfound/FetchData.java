@@ -31,6 +31,7 @@ public class FetchData extends AsyncTask<Void, Void, String> {
 
     private AsyncInterface asyncInterface;
 
+    //Constructor
     public FetchData(Context context, AsyncInterface asyncInterface) {
         this.context = context;
         this.asyncInterface = asyncInterface;
@@ -47,7 +48,6 @@ public class FetchData extends AsyncTask<Void, Void, String> {
 
     @Override
     protected String doInBackground(Void... voids) {
-
         try {
             URL url = new URL("https://api.matchmore.io/v5/devices/" + deviceId + "/matches");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -75,6 +75,7 @@ public class FetchData extends AsyncTask<Void, Void, String> {
         super.onPostExecute(aVoid);
         asyncInterface.response(aVoid);
 
+        //Test lenntgh of JSONObject requested (for debug purposes)
         try {
             JSONArray test = new JSONArray(dataJSON);
             Log.d("TESTLENGTH", String.valueOf(test.length()));
@@ -82,6 +83,7 @@ public class FetchData extends AsyncTask<Void, Void, String> {
             e.printStackTrace();
         }
 
+        //Print in logcat the JSONObject
         Log.d("JSONTEST", dataJSON);
     }
 

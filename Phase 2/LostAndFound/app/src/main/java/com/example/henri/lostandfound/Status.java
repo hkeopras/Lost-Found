@@ -1,6 +1,5 @@
 package com.example.henri.lostandfound;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -34,9 +33,11 @@ import static android.content.Context.MODE_PRIVATE;
 public class Status extends Fragment implements AsyncInterface {
 
     View myView;
+
     ListView lvMatches;
     private MatchesListAdapter adapter;
     private List<Matches> matchesList;
+
     String deviceId;
 
     @Nullable
@@ -77,12 +78,13 @@ public class Status extends Fragment implements AsyncInterface {
                 JSONObject sortJSON = new JSONObject(jsonArray.getString(i));
                 String sortJSON1 = sortJSON.getString("createdAt");
                 long sortJSON1BI = Long.parseLong(sortJSON1);
-                //Only use data no older than 7 days
+                //Only use data no older than an hour TODO:Change to 7 days: 604800000
                 if (sortJSON1BI > (System.currentTimeMillis())-3600000) {
                     hashMap.put(i, sortJSON1);
                 }
             }
 
+            //LOG: Get size of JSONObject no older than set
             Log.d("TESTSIZE", String.valueOf(hashMap.size()));
 
             //Add data by DESCENDING order
@@ -93,10 +95,11 @@ public class Status extends Fragment implements AsyncInterface {
                 JSONObject jsonObject1 = new JSONObject(jsonObject.getString("publication"));
                 JSONObject jsonObject2 = new JSONObject((jsonObject1.getString("properties")));
 
+                //Set topic and description in custom adapter
                 if (jsonObject2.length() != 0) {
                     matchesList.add(new Matches(j, jsonObject1.getString("topic"), jsonObject2.getString("Description")));
                 } else {
-                    matchesList.add(new Matches(j, jsonObject1.getString("topic"), "Description test")); //Only need this part because description was not mandatory at the beginning
+                    matchesList.add(new Matches(j, jsonObject1.getString("topic"), "This item has no description")); //Only need this part because description was not mandatory at the beginning
                 }
 
             }
@@ -109,6 +112,7 @@ public class Status extends Fragment implements AsyncInterface {
         adapter = new MatchesListAdapter(getContext(), matchesList);
         lvMatches.setAdapter(adapter);
 
+        //OnItemClick, get latitude, longitude and description, and send to Map fragment
         lvMatches.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -172,7 +176,8 @@ public class Status extends Fragment implements AsyncInterface {
                 }
             }
         }
-        return sortedMap;
-    }
 
+        return sortedMap;
+
+    }
 }
