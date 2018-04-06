@@ -1,10 +1,12 @@
 package com.example.henri.lostandfound;
 
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +39,20 @@ public class Status extends Fragment implements AsyncInterface {
     ListView lvMatches;
     private MatchesListAdapter adapter;
     private List<Matches> matchesList;
+    SwipeRefreshLayout swipeLayout;
+
+    int delay = 5000;
+
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            FetchData process = new FetchData(getContext(), Status.this);
+            process.execute();
+            handler.postDelayed(this, delay);
+        }
+    };
+
 
     String deviceId;
 
@@ -59,7 +75,23 @@ public class Status extends Fragment implements AsyncInterface {
             process.execute();
         }
 
+        //Refresh data
+        swipeLayout = (SwipeRefreshLayout) myView.findViewById(R.id.swipeLayout);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (deviceId != null) {
+                    FetchData process = new FetchData(getContext(),Status.this);
+                    process.execute();
+                }
+                swipeLayout.setRefreshing(false);
+            }
+        });
+
+        handler.postDelayed(runnable, delay);
+
         return myView;
+
     }
 
     @Override
@@ -180,4 +212,11 @@ public class Status extends Fragment implements AsyncInterface {
         return sortedMap;
 
     }
+
+    @Override
+    public void onDestroy () {
+        handler.removeCallbacks(runnable);
+        super.onDestroy();
+    }
+
 }
