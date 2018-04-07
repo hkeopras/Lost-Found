@@ -216,7 +216,7 @@ public class Notice extends Fragment
         //Creating main device
         matchMore.startUsingMainDevice((MobileDevice device) -> {
 
-            Subscription subscription = new Subscription(spinner.getSelectedItem().toString(), 1000d, 3600d, "");
+            Subscription subscription = new Subscription(spinner.getSelectedItem().toString(), 3000d, 3600d, "");
             matchMore.createSubscription(subscription, createdSubscription -> {
                 Log.d("Subscription created", createdSubscription.getId());
                 Toast.makeText(getContext(), "Subscription created", Toast.LENGTH_SHORT).show();
