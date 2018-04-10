@@ -122,12 +122,12 @@ public class Notice extends Fragment
                 } else if (radioLost.isChecked() && TextUtils.isEmpty(etDescription.getText().toString())) {
                     Toast.makeText(getContext(), "Please provide a short description.", Toast.LENGTH_SHORT).show();
                 } else if (radioLost.isChecked()) {
-                    matchMorePub();
                     updateLocation();
+                    matchMorePub();
                     startActivity(new Intent(getContext(), Menu.class));
                 } else if (radioFound.isChecked()) {
-                    matchMoreSub();
                     updateLocation();
+                    matchMoreSub();
                     match();
                     startActivity(new Intent(getContext(), Menu.class));
                 }
@@ -262,6 +262,17 @@ public class Notice extends Fragment
 
     //Update location
     public Void updateLocation() {
+
+        // Request Location permission
+        ActivityCompat.requestPermissions(getActivity(), new String[]
+                {android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+        //Configuration of API
+        if (!MatchMore.isConfigured()) {
+            MatchMore.config(getContext(),
+                    API_KEY,
+                    true);
+        }
 
         //Getting instance. It's a static variable. It's possible to have only one instance of matchmore.
         MatchMoreSdk matchMore = MatchMore.getInstance();
