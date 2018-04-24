@@ -1,0 +1,56 @@
+<resources>
+    //App name
+    <string name="app_name">Lost &amp; Found</string>
+
+    //Theses strings were here by default
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    //Menu string
+    <string name="menu_status">Status</string>
+    <string name="menu_notice">New notice</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_parameters">Settings</string>
+
+    //Login
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="create_account">Create account</string>
+    <string name="member">Already a member? Login</string>
+
+    //Notice
+    <string name="lost_or_found">Status</string>
+    <string name="lost">Lost</string>
+    <string name="found">Found</string>
+    <string name="category">Category</string>
+    <string-array name="categoryArray">
+        <item>Please select a category</item>
+        <item>Bags</item>
+        <item>Books</item>
+        <item>Cards</item>
+        <item>Cell phone &amp; Accessories</item>
+        <item>Clothing, Shoes &amp; Accessories</item>
+        <item>Coins &amp; Paper Money</item>
+        <item>Computer/Tablet &amp; Accessories</item>
+        <item>Documents</item>
+        <item>Jewelry &amp; Watches</item>
+        <item>Wallets</item>
+        <item>Other</item>
+    </string-array>
+    <string name="description">Description</string>
+    <string name="upload_picture">Upload a picture (optional)</string>
+    <string name="create_notice">Create notice</string>
+
+    <!-- Created by MapsActivity -->
+    <string name="title_activity_maps">Map</string>
+
+    <!-- Settings -->
+    <string name="username">Username</string>
+
+</resources>
