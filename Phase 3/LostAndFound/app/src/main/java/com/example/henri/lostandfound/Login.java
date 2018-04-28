@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -14,13 +15,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class Login extends AppCompatActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, AsyncInterfaceCredentials {
 
     TextView tvRegister;
     EditText etEmail, etPassword;
     Button btnLogin;
     CheckBox checkboxRememberMe;
+
+    String dataJSON = "";
 
     //Variables to save preferences
     private String email,password;
@@ -60,10 +71,53 @@ public class Login extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
+        FetchDataCredentials process = new FetchDataCredentials(this);
+        process.execute();
+
     }
 
     public void onClick(View view) {
+
         //Check correct credentials
+        try {
+            JSONArray jsonArray = new JSONArray(dataJSON);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
+                //Check if the credentials used exist in the DB
+                if (jsonObject.getString("email").equals(etEmail.getText().toString()) && jsonObject.getString("password").equals(digest("SHA-256", etPassword.getText().toString()))) {
+                    Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
+
+                    if (view == btnLogin) {
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(etEmail.getWindowToken(), 0);
+
+                        email = etEmail.getText().toString();
+                        password = etPassword.getText().toString();
+
+                        //Store email and password WITHOUT ENCRYPTING if checkboxRememberMe is checked
+                        if (checkboxRememberMe.isChecked()) {
+                            loginPrefsEditor.putBoolean("saveLogin", true);
+                            loginPrefsEditor.putString("email", email);
+                            loginPrefsEditor.putString("password", password);
+                            loginPrefsEditor.commit();
+                        } else {
+                            loginPrefsEditor.clear();
+                            loginPrefsEditor.commit();
+                        }
+                        nextActivity();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Wrong credentials", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /*
         if(etEmail.getText().toString().equals("admin") && etPassword.getText().toString().equals("admin")) {
             Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
 
@@ -90,10 +144,38 @@ public class Login extends AppCompatActivity
             Toast.makeText(getApplicationContext(), "Wrong credentials", Toast.LENGTH_SHORT).show();
         }
     }
+    */
 
     //Start Menu
     public void nextActivity() {
         startActivity(new Intent(Login.this, Menu.class));
         Login.this.finish();
     }
+
+    @Override
+    public void response(String response) {
+        dataJSON = response;
+    }
+
+    public static String digest(String alg, String input) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(alg);
+            byte[] buffer = input.getBytes("UTF-8");
+            md.update(buffer);
+            byte[] digest = md.digest();
+            return encodeHex(digest);
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return e.getMessage();
+        }
+    }
+
+    private static String encodeHex(byte[] digest) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < digest.length; i++) {
+            sb.append(Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return sb.toString();
+    }
+
 }

@@ -1,7 +1,7 @@
 package com.example.henri.lostandfound;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -17,39 +17,22 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static android.content.Context.MODE_PRIVATE;
 
+public class FetchDataCredentials extends AsyncTask<Void, Void, String> {
 
-public class FetchData extends AsyncTask<Void, Void, String> {
-
-    final String API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJhbHBzIiwic3ViIjoiMDlmZTEyZjUtODRmYS00YTI1LTg3NDAtODNjNTlmZjhiMTM3IiwiYXVkIjpbIlB1YmxpYyJdLCJuYmYiOjE1MjA1MDQ1ODYsImlhdCI6MTUyMDUwNDU4NiwianRpIjoiMSJ9.KhZOaDqod6QD0dVT_VSnMjqnpXJCfhyE6x9z8X0afAvE6wcS5pL3FhxCoN2yTWUorsmbXEHeX8gRSA_ivIgokQ";
     String dataJSON = "";
-    Context context;
-    String deviceId;
 
-    private AsyncInterface asyncInterface;
+    private AsyncInterfaceCredentials asyncInterface;
 
-    //Constructor
-    public FetchData(Context context, AsyncInterface asyncInterface) {
-        this.context = context;
+    public FetchDataCredentials(AsyncInterfaceCredentials asyncInterface) {
         this.asyncInterface = asyncInterface;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences("deviceId", MODE_PRIVATE);
-        deviceId = sharedPreferences.getString("deviceId", deviceId);
-
     }
 
     @Override
     protected String doInBackground(Void... voids) {
         try {
-            URL url = new URL("https://api.matchmore.io/v5/devices/" + deviceId + "/matches");
+            URL url = new URL("http://10.0.2.2:8080/LostAndFound_RESTfulAPI/webresources/testcontroller/getData");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestProperty("api-key", API_KEY);
             InputStream inputStream = httpURLConnection.getInputStream();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
