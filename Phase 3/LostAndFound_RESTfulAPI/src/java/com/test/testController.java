@@ -42,6 +42,8 @@ public class testController {
         while(resultSet.next()) {
             testModel tm = new testModel();
             tm.setId(resultSet.getInt("id"));
+            tm.setFirstName(resultSet.getString("firstName"));
+            tm.setLastName(resultSet.getString("lastName"));
             tm.setEmail(resultSet.getString("email"));
             tm.setPassword(resultSet.getString("password"));
             tmm.add(tm);     
