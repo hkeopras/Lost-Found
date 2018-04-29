@@ -158,9 +158,12 @@ public class Status extends Fragment implements AsyncInterface {
 
                     FragmentManager fragmentManager = getFragmentManager();
                     Bundle args = new Bundle();
+                    args.putString("topic", jsonObject1.getString("topic"));
                     args.putString("latitude", jsonObject2.getString("latitude"));
                     args.putString("longitude", jsonObject2.getString("longitude"));
                     args.putString("description", jsonObject3.getString("Description"));
+                    args.putString("owner", jsonObject3.getString("Owner"));
+                    args.putString("emailOwner", jsonObject3.getString("Email"));
 
                     Fragment fragment = new Map();
                     fragment.setArguments(args);

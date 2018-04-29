@@ -20,6 +20,40 @@
             android:layout_marginBottom="24dp"
             android:src="@mipmap/ic_app_foreground" />
 
+        <!-- First Name Label -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:theme="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/etRegisterFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/firstname"
+                android:inputType="text"
+                android:textColor="@android:color/white" />
+        </android.support.design.widget.TextInputLayout>
+
+        <!-- Last Name Label -->
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:theme="@style/TextLabel">
+
+            <EditText
+                android:id="@+id/etRegisterLastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/lastname"
+                android:inputType="text"
+                android:textColor="@android:color/white" />
+        </android.support.design.widget.TextInputLayout>
+
         <!-- Email Label -->
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

@@ -23,6 +23,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -49,12 +52,19 @@ public class Notice extends Fragment
     Button btnCreateNotice;
     ImageButton ibUploadPicture;
 
+    SharedPreferences settings;
+
+    String dataJSON, owner, emailOwner = "";
+
     final String API_KEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJhbHBzIiwic3ViIjoiMDlmZTEyZjUtODRmYS00YTI1LTg3NDAtODNjNTlmZjhiMTM3IiwiYXVkIjpbIlB1YmxpYyJdLCJuYmYiOjE1MjA1MDQ1ODYsImlhdCI6MTUyMDUwNDU4NiwianRpIjoiMSJ9.KhZOaDqod6QD0dVT_VSnMjqnpXJCfhyE6x9z8X0afAvE6wcS5pL3FhxCoN2yTWUorsmbXEHeX8gRSA_ivIgokQ";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.activity_notice, container, false);
+
+        //Sharedpreferences must be on onCreate. It was working in matchMoreSub, but for some reason, it doesn't anymore.
+        settings = getActivity().getSharedPreferences("deviceId", Context.MODE_PRIVATE);
 
         //Set title bar
         ((Menu) getActivity()).setActionBarTitle("New notice");
@@ -124,15 +134,28 @@ public class Notice extends Fragment
                 } else if (radioLost.isChecked()) {
                     updateLocation();
                     matchMorePub();
-                    startActivity(new Intent(getContext(), Menu.class));
+                    Toast.makeText(getContext(), "Publication created", Toast.LENGTH_SHORT).show();
+                    ((Menu) getActivity()).switchFragment(new Status());
                 } else if (radioFound.isChecked()) {
                     updateLocation();
                     matchMoreSub();
+                    Toast.makeText(getContext(), "Subscription created", Toast.LENGTH_SHORT).show();
                     match();
-                    startActivity(new Intent(getContext(), Menu.class));
+                    ((Menu) getActivity()).switchFragment(new Status());
                 }
             }
         });
+
+        //Get data
+        dataJSON = ((Menu) getActivity()).extraDataJSON;
+
+        try {
+            JSONObject jsonObject = new JSONObject(dataJSON);
+            owner = jsonObject.getString("firstName") + " " +  jsonObject.getString("lastName");
+            emailOwner = jsonObject.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         return myView;
     }
@@ -177,10 +200,11 @@ public class Notice extends Fragment
             Publication publication = new Publication(spinner.getSelectedItem().toString(), 0d, 3600d);
             HashMap hashMap = new HashMap<String, String>();
             hashMap.put("Description", etDescription.getText().toString());
+            hashMap.put("Owner", owner);
+            hashMap.put("Email", emailOwner);
             publication.setProperties(hashMap);
             matchMore.createPublication(publication, createdPublication -> {
                 Log.d("Publication created", createdPublication.getId());
-                Toast.makeText(getContext(), "Publication created", Toast.LENGTH_SHORT).show();
                 return Unit.INSTANCE; // This is important (b/c kotlin vs java lambdas differ in implementation)
             }, e -> {
                 e.printStackTrace();
@@ -219,7 +243,6 @@ public class Notice extends Fragment
             Subscription subscription = new Subscription(spinner.getSelectedItem().toString(), 3000d, 3600d, "");
             matchMore.createSubscription(subscription, createdSubscription -> {
                 Log.d("Subscription created", createdSubscription.getId());
-                Toast.makeText(getContext(), "Subscription created", Toast.LENGTH_SHORT).show();
                 return Unit.INSTANCE;
             }, e -> {
                 e.printStackTrace();
@@ -246,7 +269,6 @@ public class Notice extends Fragment
             Log.d("Matches found", device.getId());
             Log.d("Matches array", Arrays.deepToString(matchMore.getMatches().toArray()));
 
-            SharedPreferences settings = getActivity().getSharedPreferences("deviceId", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("deviceId", device.getId());
             editor.apply();

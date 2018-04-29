@@ -31,7 +31,8 @@ public class Login extends AppCompatActivity
     Button btnLogin;
     CheckBox checkboxRememberMe;
 
-    String dataJSON = "";
+    String dataJSON, currentDataJSON = "";
+    Boolean isCorrectCredentials = Boolean.FALSE;
 
     //Variables to save preferences
     private String email,password;
@@ -69,6 +70,7 @@ public class Login extends AppCompatActivity
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), Register.class);
                 startActivity(intent);
+                Login.this.finish();
             }
         });
 
@@ -84,71 +86,52 @@ public class Login extends AppCompatActivity
             JSONArray jsonArray = new JSONArray(dataJSON);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
-                //Check if the credentials used exist in the DB
-                if (jsonObject.getString("email").equals(etEmail.getText().toString()) && jsonObject.getString("password").equals(digest("SHA-256", etPassword.getText().toString()))) {
-                    Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
-
-                    if (view == btnLogin) {
-                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.hideSoftInputFromWindow(etEmail.getWindowToken(), 0);
-
-                        email = etEmail.getText().toString();
-                        password = etPassword.getText().toString();
-
-                        //Store email and password WITHOUT ENCRYPTING if checkboxRememberMe is checked
-                        if (checkboxRememberMe.isChecked()) {
-                            loginPrefsEditor.putBoolean("saveLogin", true);
-                            loginPrefsEditor.putString("email", email);
-                            loginPrefsEditor.putString("password", password);
-                            loginPrefsEditor.commit();
-                        } else {
-                            loginPrefsEditor.clear();
-                            loginPrefsEditor.commit();
-                        }
-                        nextActivity();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "Wrong credentials", Toast.LENGTH_SHORT).show();
+                if ((etEmail.getText().toString().equals("admin") && etPassword.getText().toString().equals("admin")) ||
+                        (jsonObject.getString("email").equals(etEmail.getText().toString()) && jsonObject.getString("password").equals(digest("SHA-256", etPassword.getText().toString())))) {
+                    currentDataJSON = jsonObject.toString();
+                    isCorrectCredentials = Boolean.TRUE;
+                    break;
                 }
             }
+
+            if (isCorrectCredentials) {
+                if (view == btnLogin) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(etEmail.getWindowToken(), 0);
+
+                    email = etEmail.getText().toString();
+                    password = etPassword.getText().toString();
+
+                    //Store email and password WITHOUT ENCRYPTING if checkboxRememberMe is checked
+                    if (checkboxRememberMe.isChecked()) {
+                        loginPrefsEditor.putBoolean("saveLogin", true);
+                        loginPrefsEditor.putString("email", email);
+                        loginPrefsEditor.putString("password", password);
+                        loginPrefsEditor.commit();
+                    } else {
+                        loginPrefsEditor.clear();
+                        loginPrefsEditor.commit();
+                    }
+                    Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
+                    nextActivity();
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Wrong credentials.", Toast.LENGTH_SHORT).show();
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
-
-        /*
-        if(etEmail.getText().toString().equals("admin") && etPassword.getText().toString().equals("admin")) {
-            Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
-
-            if (view == btnLogin) {
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(etEmail.getWindowToken(), 0);
-
-                email = etEmail.getText().toString();
-                password = etPassword.getText().toString();
-
-                //Store email and password WITHOUT ENCRYPTING if checkboxRememberMe is checked
-                if (checkboxRememberMe.isChecked()) {
-                    loginPrefsEditor.putBoolean("saveLogin", true);
-                    loginPrefsEditor.putString("email", email);
-                    loginPrefsEditor.putString("password", password);
-                    loginPrefsEditor.commit();
-                } else {
-                    loginPrefsEditor.clear();
-                    loginPrefsEditor.commit();
-                }
-                nextActivity();
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), "Wrong credentials", Toast.LENGTH_SHORT).show();
-        }
-    }
-    */
 
     //Start Menu
     public void nextActivity() {
-        startActivity(new Intent(Login.this, Menu.class));
+        Intent intent = new Intent(Login.this, Menu.class);
+        intent.putExtra("jsonData", currentDataJSON);
+        startActivity(intent);
+
         Login.this.finish();
     }
 

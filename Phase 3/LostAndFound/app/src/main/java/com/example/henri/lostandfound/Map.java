@@ -30,6 +30,7 @@ public class Map extends Fragment
     Double lat = 46.522625;
     Double lng = 6.584393;
     String description = "UNIL-Internef";
+    String topic, owner, emailOwner = "";
 
     @Nullable
     @Override
@@ -43,9 +44,12 @@ public class Map extends Fragment
         ((Menu) getActivity()).hideFAB();
 
         if (getArguments() != null) {
+            topic = getArguments().getString("topic");
             lat = Double.parseDouble(getArguments().getString("latitude"));
             lng = Double.parseDouble(getArguments().getString("longitude"));
             description = getArguments().getString("description");
+            owner = getArguments().getString("owner");
+            emailOwner = getArguments().getString("emailOwner");
         }
 
         return myView;
@@ -67,8 +71,9 @@ public class Map extends Fragment
         //Default location: UNIL - Internef
         LatLng latlng = new LatLng(lat, lng);
         MarkerOptions option = new MarkerOptions();
-        option.position(latlng).title(description);
-        map.addMarker(option);
+        option.position(latlng).title(description).snippet(emailOwner);
+        map.addMarker(option).showInfoWindow();
+
 
         //Zoom in to location pp
         float zoomLevel = 16.0f; //This goes up to 21

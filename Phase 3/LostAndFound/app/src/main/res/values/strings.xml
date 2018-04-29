@@ -1,20 +1,20 @@
 <resources>
-    //App name
+    <!-- App name -->
     <string name="app_name">Lost &amp; Found</string>
 
-    //Theses strings were here by default
+    <!-- Theses strings were here by default -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
 
-    //Menu string
+    <!-- Menu string -->
     <string name="menu_status">Status</string>
     <string name="menu_notice">New notice</string>
     <string name="menu_map">Map</string>
     <string name="menu_parameters">Settings</string>
 
-    //Login
+    <!-- Login -->
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
@@ -24,7 +24,12 @@
     <string name="create_account">Create account</string>
     <string name="member">Already a member? Login</string>
 
-    //Notice
+    <!-- Register -->
+    <string name="firstname">First name</string>
+    <string name="lastname">Last name</string>
+
+
+    <!-- Notice -->
     <string name="lost_or_found">Status</string>
     <string name="lost">Lost</string>
     <string name="found">Found</string>
@@ -48,9 +53,11 @@
     <string name="create_notice">Create notice</string>
 
     <!-- Created by MapsActivity -->
-    <string name="title_activity_maps">Map</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="apply">Apply changes</string>
 
-    <!-- Settings -->
-    <string name="username">Username</string>
+    <!-- Created by MapsActivity -->
+    <string name="title_activity_maps">Map</string>
 
 </resources>

@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,9 +13,18 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 public class Menu extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    TextView tvMenuMail, tvMenuName;
+    String extraDataJSON, extra, name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +61,28 @@ public class Menu extends AppCompatActivity
 
         //Set "Status" as default view onCreate
         onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_status));
+
+        //Get extra
+        extra = getIntent().getStringExtra("email");
+        if (getIntent().getStringExtra("jsonData") != null) {
+            extraDataJSON = getIntent().getStringExtra("jsonData");
+        }
+
+        //Get TextView from nav_header_menu.xml
+        View headerView = navigationView.getHeaderView(0);
+        tvMenuMail = (TextView) headerView.findViewById(R.id.tvMenuMail);
+        tvMenuName = (TextView) headerView.findViewById(R.id.tvMenuName);
+
+        //Get correct data
+        try {
+            JSONObject jsonObject = new JSONObject(extraDataJSON);
+            tvMenuMail.setText(jsonObject.getString("email"));
+            name = jsonObject.getString("firstName") + " " + jsonObject.getString("lastName");
+            tvMenuName.setText(name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
