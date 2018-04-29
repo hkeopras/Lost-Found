@@ -130,6 +130,7 @@ public class Settings extends Fragment {
                 jsonObject = new JSONObject(dataJSON);
                 try {
                     Class.forName("org.apache.derby.jdbc.ClientDriver");
+                    //Use 10.0.2.2:8080 for android emulator, type ipconfig in cmd to get local ip otherwise
                     String url = "jdbc:derby://10.0.2.2:1527/LostAndFound";
                     Connection conn = DriverManager.getConnection(url,"LFadmin","LFadmin");
                     Statement st = conn.createStatement();

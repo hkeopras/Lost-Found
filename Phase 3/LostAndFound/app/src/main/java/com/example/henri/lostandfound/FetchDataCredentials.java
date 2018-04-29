@@ -31,6 +31,7 @@ public class FetchDataCredentials extends AsyncTask<Void, Void, String> {
     @Override
     protected String doInBackground(Void... voids) {
         try {
+            //Use 10.0.2.2:8080 for android emulator, type ipconfig in cmd to get local ip otherwise
             URL url = new URL("http://10.0.2.2:8080/LostAndFound_RESTfulAPI/webresources/testcontroller/getData");
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
             InputStream inputStream = httpURLConnection.getInputStream();

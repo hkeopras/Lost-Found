@@ -84,6 +84,7 @@ public class Register extends AppCompatActivity implements AsyncInterfaceCredent
                             Toast.makeText(getApplicationContext(), "Creating account...", Toast.LENGTH_SHORT).show();
                             AddCredentials process = new AddCredentials();
                             process.execute();
+                            startActivity(new Intent(Register.this, Login.class));
                             finish();
                         }
 
@@ -141,6 +142,7 @@ public class Register extends AppCompatActivity implements AsyncInterfaceCredent
 
             try {
                 Class.forName("org.apache.derby.jdbc.ClientDriver");
+                //Use 10.0.2.2:8080 for android emulator, type ipconfig in cmd to get local ip otherwise
                 String url = "jdbc:derby://10.0.2.2:1527/LostAndFound";
                 Connection conn = DriverManager.getConnection(url,"LFadmin","LFadmin");
                 Statement st = conn.createStatement();
