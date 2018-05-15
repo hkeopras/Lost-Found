@@ -14,7 +14,12 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -141,18 +146,25 @@ public class Register extends AppCompatActivity implements AsyncInterfaceCredent
         protected String doInBackground(String... strings) {
 
             try {
-                Class.forName("org.apache.derby.jdbc.ClientDriver");
-                //Use 10.0.2.2:8080 for android emulator, type ipconfig in cmd to get local ip otherwise
-                String url = "jdbc:derby://10.0.2.2:1527/LostAndFound";
-                Connection conn = DriverManager.getConnection(url,"LFadmin","LFadmin");
-                Statement st = conn.createStatement();
-                st.executeUpdate("INSERT INTO LFADMIN.USERS (firstName, lastName, email, password) " +
-                        "VALUES (\'" + etRegisterFirstName.getText().toString() + "\', \'"
-                        + etRegisterLastName.getText().toString() + "\', \'"
-                        + etRegisterEmail.getText().toString() + "\', \'"
-                        + digest("SHA-256", etRegisterPassword.getText().toString()) + "\')");
-                conn.close();
-            } catch (Exception e) {
+
+                String email = etRegisterEmail.getText().toString();
+                int indexAt = email.indexOf("@");
+                String newEmail = email.substring(0, indexAt) + "%40" + email.substring(indexAt + 1);
+
+                String strUrl = "http://10.0.2.2:8080/LostFound-war/RegistrationServlet?firstName=" + etRegisterFirstName.getText().toString() +
+                        "&lastName=" + etRegisterLastName.getText().toString() +
+                        "&email=" + newEmail +
+                        "&password=" + digest("SHA-256", etRegisterPassword.getText().toString()) +
+                        "&submit=submit";
+                URL url = new URL(strUrl);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                //This line is necessary for some reason
+                InputStream inputStream = httpURLConnection.getInputStream();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
