@@ -16,7 +16,12 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -125,35 +130,48 @@ public class Settings extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
 
-            JSONObject jsonObject = null;
             try {
-                jsonObject = new JSONObject(dataJSON);
-                try {
-                    Class.forName("org.apache.derby.jdbc.ClientDriver");
-                    //Use 10.0.2.2:8080 for android emulator, type ipconfig in cmd to get local ip otherwise
-                    String url = "jdbc:derby://10.0.2.2:1527/LostAndFound";
-                    Connection conn = DriverManager.getConnection(url,"LFadmin","LFadmin");
-                    Statement st = conn.createStatement();
 
-                    if (etSettingsNewPassword.getText().toString().equals(etSettingsConfirmNewPassword.getText().toString()) && !etSettingsNewPassword.getText().toString().isEmpty()) {
-                        st.executeUpdate("UPDATE LFADMIN.USERS " +
-                                "SET firstName = \'" + etSettingsFirstName.getText().toString() + "\', " +
-                                "lastName = \'" + etSettingsLastName.getText().toString() + "\', " +
-                                "email = \'" + etSettingsEmail.getText().toString() + "\', " +
-                                "password = \'" + digest("SHA-256", etSettingsNewPassword.getText().toString()) + "\' " +
-                                "WHERE id = " + jsonObject.get("id"));
-                    } else {
-                        st.executeUpdate("UPDATE LFADMIN.USERS " +
-                                "SET firstName = \'" + etSettingsFirstName.getText().toString() + "\', " +
-                                "lastName = \'" + etSettingsLastName.getText().toString() + "\', " +
-                                "email = \'" + etSettingsEmail.getText().toString() + "\' " +
-                                "WHERE id = " + jsonObject.get("id"));
-                    }
+                JSONObject jsonObject = new JSONObject(dataJSON);
 
-                    conn.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                String email = etSettingsEmail.getText().toString();
+                int indexAt = email.indexOf("@");
+                String newEmail = email.substring(0, indexAt) + "%40" + email.substring(indexAt + 1);
+
+                if (etSettingsNewPassword.getText().toString().equals(etSettingsConfirmNewPassword.getText().toString()) && !etSettingsNewPassword.getText().toString().isEmpty()) {
+                    String strUrl = "http://10.0.2.2:8080/LostFound-war/EditServlet?id=" + jsonObject.get("id") +
+                            "&firstName=" + etSettingsFirstName.getText().toString() +
+                            "&lastName=" + etSettingsLastName.getText().toString() +
+                            "&email=" + newEmail +
+                            "&password=" + digest("SHA-256", etSettingsNewPassword.getText().toString()) +
+                            "&submit=submit";
+
+                    URL url = new URL(strUrl);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                    //This line is necessary for some reason
+                    InputStream inputStream = httpURLConnection.getInputStream();
+
+                } else {
+                    String strUrl = "http://10.0.2.2:8080/LostFound-war/EditServlet?id=" + jsonObject.get("id") +
+                            "&firstName=" + etSettingsFirstName.getText().toString() +
+                            "&lastName=" + etSettingsLastName.getText().toString() +
+                            "&email=" + newEmail +
+                            "&password=" + digest("SHA-256", etSettingsPassword.getText().toString()) +
+                            "&submit=submit";
+
+                    URL url = new URL(strUrl);
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+                    //This line is necessary for some reason
+                    InputStream inputStream = httpURLConnection.getInputStream();
+
                 }
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
