@@ -38,11 +38,11 @@
                 <td><input type="text" size="32" name="lastName" value="<%=lastName%>"/></td>
             </tr>
             <tr>
-                <td>Email</td>
+                <td>Email </td>
                 <td><input type="text" size="32" name="email" value="<%=email%>"/></td>
             </tr>
             <tr>
-                <td>Password</td>
+                <td>Password </td>
                 <td><input type="text" size="32" name="password" value="<%=password%>"/></td>
             </tr>
             <tr>

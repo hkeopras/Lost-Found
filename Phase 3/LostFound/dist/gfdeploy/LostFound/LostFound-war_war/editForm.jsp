@@ -1,6 +1,6 @@
 <%-- 
-    Document   : registrationForm
-    Created on : 15 mai 2018, 21:46:33
+    Document   : editForm
+    Created on : 16 mai 2018, 11:23:49
     Author     : Henri
 --%>
 
@@ -12,14 +12,14 @@
 <body>
     
     <% 
-        
-        String firstName, lastName, email, password;
+        String id, firstName, lastName, email, password;
   
+        id = request.getParameter("id");
         firstName = request.getParameter("firstName");
         lastName = request.getParameter("lastName");
         email = request.getParameter("email");
         password = request.getParameter("password");
-     
+        
         if (firstName == null) firstName = "";
         if (lastName == null) lastName  = ""; 
         if (email == null) email = "";
@@ -27,8 +27,12 @@
 
    %>
 
-    <form action="/LostFound-war/RegistrationServlet" method="get">
+    <form action="/LostFound-war/EditServlet" method="get">
         <table border="0" align="left">
+            <tr>
+                <td>Id </td>
+                <td><input type="number" size="32" name="id" value="<%=id%>"/></td>
+            </tr>
             <tr>
                 <td>First Name </td>
                 <td><input type="text" size="32" name="firstName" value="<%=firstName%>"/></td>
@@ -42,7 +46,7 @@
                 <td><input type="text" size="32" name="email" value="<%=email%>"/></td>
             </tr>
             <tr>
-                <td>Password </td>
+                <td>Password</td>
                 <td><input type="text" size="32" name="password" value="<%=password%>"/></td>
             </tr>
             <tr>
@@ -55,4 +59,3 @@
     </form>       
 </body>
 </html>
-
