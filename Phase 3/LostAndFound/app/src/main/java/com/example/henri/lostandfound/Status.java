@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -66,6 +67,9 @@ public class Status extends Fragment implements AsyncInterface {
 
         //Hide FloatingActionButton
         ((Menu) getActivity()).showFAB();
+
+        //Hide keyboard when activity starts
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         //Get JSON data
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("deviceId", MODE_PRIVATE);

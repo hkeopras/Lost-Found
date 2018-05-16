@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,6 +43,9 @@ public class Map extends Fragment
 
         //Hide FloatingActionButton
         ((Menu) getActivity()).hideFAB();
+
+        //Hide keyboard when activity starts
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         if (getArguments() != null) {
             topic = getArguments().getString("topic");
