@@ -83,46 +83,77 @@ public class Login extends AppCompatActivity
 
         //Check correct credentials
         try {
-            JSONArray jsonArray = new JSONArray(dataJSON);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
-                if ((etEmail.getText().toString().equals("admin") && etPassword.getText().toString().equals("admin")) ||
-                        (jsonObject.getString("email").equals(etEmail.getText().toString()) && jsonObject.getString("password").equals(digest("SHA-256", etPassword.getText().toString())))) {
-                    currentDataJSON = jsonObject.toString();
-                    isCorrectCredentials = Boolean.TRUE;
-                    break;
-                }
-            }
+            //If the local server is not available
+            if (dataJSON == null || dataJSON.isEmpty()) {
+                if (etEmail.getText().toString().equals("admin") && etPassword.getText().toString().equals("admin")) {
 
-            if (isCorrectCredentials) {
-                if (view == btnLogin) {
-                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    inputMethodManager.hideSoftInputFromWindow(etEmail.getWindowToken(), 0);
+                    currentDataJSON = "{\"id\":1,\"firstName\":\"Henri\",\"lastName\":\"Keopraseuth\",\"email\":\"admin\",\"password\":\"8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918\"}";
 
-                    email = etEmail.getText().toString();
-                    password = etPassword.getText().toString();
+                    if (view == btnLogin) {
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(etEmail.getWindowToken(), 0);
 
-                    //Store email and password WITHOUT ENCRYPTING if checkboxRememberMe is checked
-                    if (checkboxRememberMe.isChecked()) {
-                        loginPrefsEditor.putBoolean("saveLogin", true);
-                        loginPrefsEditor.putString("email", email);
-                        loginPrefsEditor.putString("password", password);
-                        loginPrefsEditor.commit();
-                    } else {
-                        loginPrefsEditor.clear();
-                        loginPrefsEditor.commit();
+                        email = etEmail.getText().toString();
+                        password = etPassword.getText().toString();
+
+                        //Store email and password WITHOUT ENCRYPTING if checkboxRememberMe is checked
+                        if (checkboxRememberMe.isChecked()) {
+                            loginPrefsEditor.putBoolean("saveLogin", true);
+                            loginPrefsEditor.putString("email", email);
+                            loginPrefsEditor.putString("password", password);
+                            loginPrefsEditor.commit();
+                        } else {
+                                loginPrefsEditor.clear();
+                                loginPrefsEditor.commit();
+                        }
+                        Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
+                        nextActivity();
                     }
-                    Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
-                    nextActivity();
+                } else {
+                    Toast.makeText(getApplicationContext(), "Wrong credentials.", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(getApplicationContext(), "Wrong credentials.", Toast.LENGTH_SHORT).show();
-            }
 
+                //if the local server is available
+            } else {
+                JSONArray jsonArray = new JSONArray(dataJSON);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = new JSONObject(jsonArray.getString(i));
+                    if ((jsonObject.getString("email").equals(etEmail.getText().toString()) && jsonObject.getString("password").equals(digest("SHA-256", etPassword.getText().toString())))) {
+                        currentDataJSON = jsonObject.toString();
+                        isCorrectCredentials = Boolean.TRUE;
+                        break;
+                    }
+                }
+
+                if (isCorrectCredentials) {
+                    if (view == btnLogin) {
+                        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        inputMethodManager.hideSoftInputFromWindow(etEmail.getWindowToken(), 0);
+
+                        email = etEmail.getText().toString();
+                        password = etPassword.getText().toString();
+
+                        //Store email and password WITHOUT ENCRYPTING if checkboxRememberMe is checked
+                        if (checkboxRememberMe.isChecked()) {
+                            loginPrefsEditor.putBoolean("saveLogin", true);
+                            loginPrefsEditor.putString("email", email);
+                            loginPrefsEditor.putString("password", password);
+                            loginPrefsEditor.commit();
+                        } else {
+                            loginPrefsEditor.clear();
+                            loginPrefsEditor.commit();
+                        }
+                        Toast.makeText(getApplicationContext(), "Authenticating...", Toast.LENGTH_SHORT).show();
+                        nextActivity();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "Wrong credentials.", Toast.LENGTH_SHORT).show();
+                }
+            }
 
         } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                e.printStackTrace();
+            }
 
     }
 
